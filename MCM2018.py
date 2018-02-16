@@ -135,7 +135,9 @@ def get_state_data_for_plotting(state1):
     dfMG = data[data.loc[:, 'MSN'] == 'MGTCB']
     dfRF = data[data.loc[:, 'MSN'] == 'RFTCB']
     dfDF = data[data.loc[:, 'MSN'] == 'DFTCB']
-    petro = dfPA.loc[:, 'Data'] + dfEM.loc[:, 'Data'] + dfJF.loc[:, 'Data'] + dfMG.loc[:, 'Data'] + dfRF.loc[:, 'Data'] + dfDF.loc[:, 'Data']
+    petro = dfPA.loc[:, 'Data'] + dfEM.loc[:, 'Data'] + dfJF.loc[:, 'Data'] + dfMG.loc[:, 'Data'] + dfRF.loc[:,
+                                                                                                    'Data'] + dfDF.loc[
+                                                                                                              :, 'Data']
 
     dfNG = data[data.loc[:, 'MSN'] == 'NGTCB']
     natural_gas = dfNG.loc[:, 'Data']
@@ -165,11 +167,38 @@ def get_state_data_for_plotting(state1):
     dfBio = data[data.loc[:, 'MSN'] == 'BMTCB']
     bio = dfBio.loc[:, 'Data']
 
-    data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio']
-    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio]
-    dataf = pd.DataFrame(index = data_labels, data=data_values)
+    renewable = wind + solar + hydro + geo + bio
+    nonrenewable = petro + natural_gas + coal_wood + nuclear
+
+    data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio', 'renewables',
+                   'nonrenewables']
+    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio, renewable, nonrenewable]
+
+    dataf = pd.DataFrame(index=data_labels, data=data_values)
 
     return dataf
+
+def plot_sources_over_time1(df):
+
+    #df = get_state_data_for_plotting0('CA')
+    ax = plt.figure(figsize=(12, 5)).add_subplot(111)
+
+
+    total = df.loc['renewables', :] + df.loc['nonrenewables', :]
+
+    ax1 = (df.loc['renewables', :] / total * 100 ).plot(color='blue', grid=True, label='Renewables')
+    ax2 = (df.loc['nonrenewables', :] / total * 100 ).plot(color='red', grid=True, label='Non-renewables')
+
+    h1, l1 = ax1.get_legend_handles_labels()
+
+    ax.set_title('Energy Consumption of Renewables and Non-rewenables over time for {}'.format('CA'))
+    ax.set_ylabel('% of total energy', rotation=0, labelpad=30)
+
+    ax.legend(h1, l1, loc=2)
+    plt.show()
+
+#df = get_state_data_for_plotting('CA')
+#plot_sources_over_time1(df)
 
 
 def get_state_data_for_plotting0(state1):
@@ -221,38 +250,61 @@ def get_state_data_for_plotting0(state1):
 
     renewable = wind + solar + hydro + geo + bio
     nonrenewable = petro + natural_gas + coal_wood + nuclear
+    total = wind + solar + hydro + geo + bio + petro + natural_gas + coal_wood + nuclear
 
-    data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio', 'renewables',
-                   'nonrenewables']
-    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio, renewable, nonrenewable]
+    data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio', 'renewable',
+                   'nonrenewable', 'total']
+    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio, renewable, nonrenewable, total]
 
     dataf = pd.DataFrame(index=data_labels, data=data_values)
 
     return dataf
 
-df = get_state_data_for_plotting0('CA')
-ax = plt.figure(figsize=(12, 5)).add_subplot(111)
-#ax.xlabel('Number of requests every 10 minutes')
+def plot_energy_usage_over_time_all_states(dfCA, dfAZ, dfNM, dfTX):
+    ax = plt.figure(figsize=(12, 5)).add_subplot(111)
 
-total = df.loc['renewables', :] + df.loc['nonrenewables', :]
+    # total = df.loc['renewables', :] + df.loc['nonrenewables', :]
 
-ax1 = (df.loc['renewables', :] / total * 100 ).plot(color='blue', grid=True, label='Renewables')
-ax2 = (df.loc['nonrenewables', :] / total * 100 ).plot(color='red', grid=True, label='Non-renewables')
+    axCA = dfCA.loc['total', :].plot(color='blue', grid=True, label='CA')
+    axAZ = dfAZ.loc['total', :].plot(color='green', grid=True, label='AZ')
+    axNM = dfNM.loc['total', :].plot(color='gray', grid=True, label='NM')
+    axTX = dfTX.loc['total', :].plot(color='red', grid=True, label='TX')
+    # axNM = (df.loc['nonrenewables', :] / total * 100 ).plot(color='red', grid=True, label='Non-renewables')
 
-h1, l1 = ax1.get_legend_handles_labels()
-print(l1)
+    h1, l1 = axCA.get_legend_handles_labels()
 
-ax.set_title('Energy Consumption of Renewables and Non-rewenables over time for {}'.format('CA'))
-ax.set_ylabel('% of total energy', rotation=0)
-#ax.set_ylabels(xlabels, rotation=40, ha=ha[n])
+    ax.set_title('Energy Usage over Time for States')
+    ax.set_ylabel('Total Energy Usage', rotation=0, labelpad=60)
 
+    ax.legend(h1, l1, loc=2)
+    plt.show()
 
-#h2, l2 = ax2.get_legend_handles_labels()
-#print(l2)
+def plot_energy_from_renewables_over_time_all_states(dfCA, dfAZ, dfNM, dfTX):
+    ax = plt.figure(figsize=(12, 5)).add_subplot(111)
 
-ax.legend(h1, l1, loc=2)
-plt.show()
+    # total = df.loc['renewables', :] + df.loc['nonrenewables', :]
 
+    axCA = dfCA.loc['renewable', :].plot(color='blue', grid=True, label='CA')
+    axAZ = dfAZ.loc['renewable', :].plot(color='green', grid=True, label='AZ')
+    axNM = dfNM.loc['renewable', :].plot(color='gray', grid=True, label='NM')
+    axTX = dfTX.loc['renewable', :].plot(color='red', grid=True, label='TX')
+    # axNM = (df.loc['nonrenewables', :] / total * 100 ).plot(color='red', grid=True, label='Non-renewables')
+
+    h1, l1 = axCA.get_legend_handles_labels()
+
+    ax.set_title('Renewable Energy Usage over Time for States')
+    ax.set_ylabel('Total Energy Usage', rotation=0, labelpad=70)
+
+    ax.legend(h1, l1, loc=2)
+    plt.show()
+
+dfCA = get_state_data_for_plotting0('CA')
+dfAZ = get_state_data_for_plotting0('AZ')
+dfNM = get_state_data_for_plotting0('NM')
+dfTX = get_state_data_for_plotting0('TX')
+
+#plot_energy_usage_over_time_all_states(dfCA, dfAZ, dfNM, dfTX)
+plot_energy_from_renewables_over_time_all_states(dfCA, dfAZ, dfNM, dfTX)
 
 def get_state_profiles_2009(state):
     ''' For a given state, show their energy profile in 2009'''

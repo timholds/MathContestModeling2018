@@ -10,7 +10,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/problem_c.py$MCM2018.coverage" NAME="MCM2018 Coverage Results" MODIFIED="1518764337976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../.." />
+    <SUITE FILE_PATH="coverage/problem_c.py$MCM2018.coverage" NAME="MCM2018 Coverage Results" MODIFIED="1518766732226" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../.." />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -21,8 +21,8 @@
       <file leaf-file-name="MCM2018.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../../MCM2018.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="245" column="45" lean-forward="false" selection-start-line="245" selection-start-column="45" selection-end-line="245" selection-end-column="45" />
+            <state relative-caret-position="416">
+              <caret line="294" column="28" lean-forward="false" selection-start-line="294" selection-start-column="28" selection-end-line="294" selection-end-column="28" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#125#139#0" expanded="false" />
@@ -31,13 +31,16 @@
                 <element signature="e#2292#2420#0" expanded="false" />
                 <element signature="e#2459#2578#0" expanded="false" />
                 <element signature="e#3621#4208#0" expanded="false" />
-                <element signature="e#4371#6118#0" expanded="false" />
-                <element signature="e#9095#9321#0" expanded="false" />
-                <element signature="e#9358#10394#0" expanded="false" />
-                <element signature="e#10422#10708#0" expanded="false" />
-                <element signature="e#10749#12513#0" expanded="false" />
-                <element signature="e#12557#12872#0" expanded="false" />
-                <marker date="1518764337000" expanded="false" signature="2615:3560" ph="..." />
+                <element signature="e#4371#6514#0" expanded="false" />
+                <element signature="e#6554#7182#0" expanded="false" />
+                <element signature="e#7301#9547#0" expanded="false" />
+                <element signature="e#9621#10357#0" expanded="false" />
+                <element signature="e#11552#11778#0" expanded="false" />
+                <element signature="e#11815#12851#0" expanded="false" />
+                <element signature="e#12879#13165#0" expanded="false" />
+                <element signature="e#13206#14970#0" expanded="false" />
+                <element signature="e#15014#15329#0" expanded="false" />
+                <marker date="1518766732000" expanded="false" signature="2615:3560" ph="..." />
               </folding>
             </state>
           </provider>
@@ -393,7 +396,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -408,8 +411,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../MCM2018.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="245" column="45" lean-forward="false" selection-start-line="245" selection-start-column="45" selection-end-line="245" selection-end-column="45" />
+        <state relative-caret-position="416">
+          <caret line="294" column="28" lean-forward="false" selection-start-line="294" selection-start-column="28" selection-end-line="294" selection-end-column="28" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#125#139#0" expanded="false" />
@@ -418,13 +421,16 @@
             <element signature="e#2292#2420#0" expanded="false" />
             <element signature="e#2459#2578#0" expanded="false" />
             <element signature="e#3621#4208#0" expanded="false" />
-            <element signature="e#4371#6118#0" expanded="false" />
-            <element signature="e#9095#9321#0" expanded="false" />
-            <element signature="e#9358#10394#0" expanded="false" />
-            <element signature="e#10422#10708#0" expanded="false" />
-            <element signature="e#10749#12513#0" expanded="false" />
-            <element signature="e#12557#12872#0" expanded="false" />
-            <marker date="1518764337000" expanded="false" signature="2615:3560" ph="..." />
+            <element signature="e#4371#6514#0" expanded="false" />
+            <element signature="e#6554#7182#0" expanded="false" />
+            <element signature="e#7301#9547#0" expanded="false" />
+            <element signature="e#9621#10357#0" expanded="false" />
+            <element signature="e#11552#11778#0" expanded="false" />
+            <element signature="e#11815#12851#0" expanded="false" />
+            <element signature="e#12879#13165#0" expanded="false" />
+            <element signature="e#13206#14970#0" expanded="false" />
+            <element signature="e#15014#15329#0" expanded="false" />
+            <marker date="1518766732000" expanded="false" signature="2615:3560" ph="..." />
           </folding>
         </state>
       </provider>
