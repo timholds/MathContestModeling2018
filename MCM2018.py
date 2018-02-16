@@ -267,7 +267,7 @@ def produce_graphs(dfCA, dfAZ, dfNM, dfTX):
 #produce_graphs(dfCA, dfAZ, dfNM, dfTX)
 
 
-# ---- These I still need to figure out what to do with 
+# ---- These I still need to figure out what to do with
 def get_state_profiles_2009(state):
     ''' For a given state, show their energy profile in 2009'''
 
@@ -377,53 +377,5 @@ def plot_state_sources_over_time(df):
     plt.ylabel('Percentage of Total Energy')
     plt.title('{State} use of energy over time')
     plt.show()
-
-
-
-#fd = make_profile_df_unrefined(dfCA2009)
-#usage_list, percentage_list = turn_profile_df_lists_to_numbers(fd)
-#dfCA2009_profile = make_profile_df(usage_list, percentage_list)
-#dfCA2009_profile.name = 'California 2009 Profile'
-#dfCA2009_profile.plot.line()
-#get_state_sources_data(df)
-#plot_sources_pie(dfCA2009)
-#plot_state_sources_over_time(df)
-#get_materials_numbers(data)
-
-'''
-# Get the values for 2009 for all the codes for all the states
-df2009 = make_year_df(df, 2009)
-df2009.name = '2009 Data'
-
-dfCA = state_df(df, 'CA')
-dfCA2009 = year_df(dfCA, 2009)
-dfCA2009.name = 'California 2009 Data'
-
-dfAZ = state_df(df, 'AZ')
-dfAZ2009 = year_df(dfAZ, 2009)
-dfAZ2009.name = 'Arizona 2009 Data'
-
-dfNM = state_df(df, 'NM')
-dfNM2009 = year_df(dfNM, 2009)
-dfNM2009.name = 'New Mexico 2009 Data'
-
-dfTX = state_df(df, 'TX')
-dfTX2009 = year_df(dfTX, 2009)
-dfTX2009.name = 'Texas 2009 Data'
-'''
-
-
-
-
-# Write some code to add up the different types of fuels
-# ff_total_use = df.loc['Fossiel Fuel']
-# rn_total_use = df.loc['Renewable']
-# total_usage = ff_total_use + rn_total_use
-
-# ff_rel_use = [i / total_usage for i in df.loc['Fossil Fuel']]
-# rn_rel_use = [i / total_usage for i in df.loc['Renewable']]
-
-
-
 
 
