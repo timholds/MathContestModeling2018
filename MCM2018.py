@@ -4,10 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
-
-def run_all():
-    df = data_in()
-
+# ---- Functions that handle the data
 def data_in():
     
     ''' Takes in data from the CSV, and gets the relevant data
@@ -73,9 +70,8 @@ def make_year_df(df, year):
     
     ''' Get data for a single year and return the dataframe '''
     
-    year_df = df[df['Year']== year]
+    year_df = df[df['Year'] == year]
     return year_df
-
 
 def make_profile_df_unrefined(df):
 
@@ -98,7 +94,8 @@ def make_profile_df_unrefined(df):
     for x in s:
         percentage_list.extend(x * 100)
 
-    t = fd.loc[:, 'Usage in BTUs']
+    # t = fd.loc[:, 'Usage in BTUs']
+    t = data.loc[:, 'Usage in BTUs']
     usage_list = []
     for y in t:
         usage_list.extend(y)
@@ -119,68 +116,7 @@ def make_profile_df(usage_list, percentage_list):
 
     return data
 
-#usage_list, percentage_list= make_profile_df_unrefined(dfStateYear)
-#make_profile_df(usage_list, percentage_list)
-
 def get_state_data_for_plotting(state1):
-    state = state1
-    df = data_in()
-    data1 = df[df.loc[:, 'StateCode'] == state]
-    # Get their data for the relevant columns as a series over all the years
-
-    data = data1.filter(items=['Year', 'MSN', 'Data']).set_index(['Year'])
-    # print(data)
-
-    dfPA = data[data.loc[:, 'MSN'] == 'PATCB']
-    dfEM = data[data.loc[:, 'MSN'] == 'EMTCB']
-    dfJF = data[data.loc[:, 'MSN'] == 'JFTCB']
-    dfMG = data[data.loc[:, 'MSN'] == 'MGTCB']
-    dfRF = data[data.loc[:, 'MSN'] == 'RFTCB']
-    dfDF = data[data.loc[:, 'MSN'] == 'DFTCB']
-    petro = dfPA.loc[:, 'Data'] + dfEM.loc[:, 'Data'] + dfJF.loc[:, 'Data'] + dfMG.loc[:, 'Data'] + dfRF.loc[:,
-                                                                                                    'Data'] + dfDF.loc[
-                                                                                                              :, 'Data']
-
-    dfNG = data[data.loc[:, 'MSN'] == 'NGTCB']
-    natural_gas = dfNG.loc[:, 'Data']
-
-    dfCoal = data[data.loc[:, 'MSN'] == 'CLTCB']
-    dataCoal = dfCoal.loc[:, 'Data']
-
-    dfWood = data[data.loc[:, 'MSN'] == 'WWTCB']
-    dataWood = dfWood.loc[:, 'Data']
-    coal_wood = dataCoal + dataWood
-
-    dfNuc = data[data.loc[:, 'MSN'] == 'NUEGB']
-    nuclear = dfNuc.loc[:, 'Data']
-
-    dfWind = data[data.loc[:, 'MSN'] == 'WYTCB']
-    wind = dfWind.loc[:, 'Data']
-
-    dfSol = data[data.loc[:, 'MSN'] == 'SOTCB']
-    solar = dfSol.loc[:, 'Data']
-
-    dfHydro = data[data.loc[:, 'MSN'] == 'HYTCB']
-    hydro = dfHydro.loc[:, 'Data']
-
-    dfGeo = data[data.loc[:, 'MSN'] == 'GETCB']
-    geo = dfGeo.loc[:, 'Data']
-
-    dfBio = data[data.loc[:, 'MSN'] == 'BMTCB']
-    bio = dfBio.loc[:, 'Data']
-
-    renewable = wind + solar + hydro + geo + bio
-    nonrenewable = petro + natural_gas + coal_wood + nuclear
-
-    data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio', 'renewables',
-                   'nonrenewables']
-    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio, renewable, nonrenewable]
-
-    dataf = pd.DataFrame(index=data_labels, data=data_values)
-
-    return dataf
-
-def get_state_data_for_plotting0(state1):
     state = state1
     df = data_in()
     data1 = df[df.loc[:, 'StateCode'] == state]
@@ -239,13 +175,26 @@ def get_state_data_for_plotting0(state1):
 
     return dataf
 
-#df = get_state_data_for_plotting('CA')
-#plot_sources_over_time1(df)
+# ----- Use this to print out the energy profile for each state in 2009
+def make_profile(state):
+    df = data_in()
+    data = get_materials_numbers(df)
+    df2009 = make_year_df(df, 2009)
+    df2009State = make_state_df(df2009, state)
+    # for all states in the year 2009
+    usage_list, percentage_list = make_profile_df_unrefined(df2009State)
+    profile_df = make_profile_df(usage_list, percentage_list)
+    print(profile_df)
+    return profile_df
+make_profile('CA')
 
-dfCA = get_state_data_for_plotting0('CA')
-dfAZ = get_state_data_for_plotting0('AZ')
-dfNM = get_state_data_for_plotting0('NM')
-dfTX = get_state_data_for_plotting0('TX')
+
+# ---- Use these to create plots for various things---------
+
+dfCA = get_state_data_for_plotting('CA')
+dfAZ = get_state_data_for_plotting('AZ')
+dfNM = get_state_data_for_plotting('NM')
+dfTX = get_state_data_for_plotting('TX')
 
 def plot_energy_usage_over_time_all_states(dfCA, dfAZ, dfNM, dfTX):
     ax = plt.figure(figsize=(12, 5)).add_subplot(111)
@@ -261,7 +210,7 @@ def plot_energy_usage_over_time_all_states(dfCA, dfAZ, dfNM, dfTX):
     h1, l1 = axCA.get_legend_handles_labels()
 
     ax.set_title('Energy Usage over Time')
-    ax.set_ylabel('Total Energy Used (BTUs)', rotation=0, labelpad=70)
+    ax.set_ylabel('Energy Used \n (BTU)', rotation=0, labelpad=40)
     ax.yaxis.set_major_formatter(FormatStrFormatter('%.1e'))
 
     ax.legend(h1, l1, loc=2)
@@ -280,10 +229,10 @@ def plot_energy_from_renewables_over_time_all_states(dfCA, dfAZ, dfNM, dfTX):
 
     h1, l1 = axCA.get_legend_handles_labels()
 
-    ax.set_title('Renewable Energy Use over Time')
-    ax.yaxis.set_major_formatter(FormatStrFormatter('%2.0f'))
+    ax.set_title('Renewable Energy Used over Time')
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.1e'))
     #ax.set_yticks([20, 40, 60, 80])
-    ax.set_ylabel('Total Renewable Energy Usage (BTUs)', rotation=0, labelpad=70)
+    ax.set_ylabel('Renewable Energy Used \n (BTU)', rotation=0, labelpad=40)
 
     ax.legend(h1, l1, loc=2)
     plt.show()
@@ -304,8 +253,8 @@ def plot_energy_from_renewables_over_time_all_states_relative(dfCA, dfAZ, dfNM, 
 
     h1, l1 = axCA.get_legend_handles_labels()
 
-    ax.set_title('Renewable Energy Usage over Time for States as a Percentage of Total Enery Usage')
-    ax.set_ylabel('% of Total Energy Usage', rotation=0, labelpad=70)
+    ax.set_title('Percentage of Energy from Renewables over Time')
+    ax.set_ylabel('Percentage of Energy \n from Renewables', rotation=0, labelpad=70)
 
     ax.legend(h1, l1, loc=2)
     plt.show()
@@ -315,7 +264,10 @@ def produce_graphs(dfCA, dfAZ, dfNM, dfTX):
     plot_energy_from_renewables_over_time_all_states(dfCA, dfAZ, dfNM, dfTX)
     plot_energy_from_renewables_over_time_all_states_relative(dfCA, dfAZ, dfNM, dfTX)
 
+#produce_graphs(dfCA, dfAZ, dfNM, dfTX)
 
+
+# ---- These I still need to figure out what to do with 
 def get_state_profiles_2009(state):
     ''' For a given state, show their energy profile in 2009'''
 
