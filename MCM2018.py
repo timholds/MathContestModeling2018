@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 def run_all():
     df = data_in()
 
-
 def data_in():
     
     ''' Takes in data from the CSV, and gets the relevant data
@@ -121,8 +120,59 @@ def make_profile_df(usage_list, percentage_list):
 #usage_list, percentage_list= make_profile_df_unrefined(dfStateYear)
 #make_profile_df(usage_list, percentage_list)
 
-
 def get_state_data_for_plotting(state1):
+    state = state1
+    df = data_in()
+    data1 = df[df.loc[:, 'StateCode'] == state]
+    # Get their data for the relevant columns as a series over all the years
+
+    data = data1.filter(items=['Year', 'MSN', 'Data']).set_index(['Year'])
+    # print(data)
+
+    dfPA = data[data.loc[:, 'MSN'] == 'PATCB']
+    dfEM = data[data.loc[:, 'MSN'] == 'EMTCB']
+    dfJF = data[data.loc[:, 'MSN'] == 'JFTCB']
+    dfMG = data[data.loc[:, 'MSN'] == 'MGTCB']
+    dfRF = data[data.loc[:, 'MSN'] == 'RFTCB']
+    dfDF = data[data.loc[:, 'MSN'] == 'DFTCB']
+    petro = dfPA.loc[:, 'Data'] + dfEM.loc[:, 'Data'] + dfJF.loc[:, 'Data'] + dfMG.loc[:, 'Data'] + dfRF.loc[:, 'Data'] + dfDF.loc[:, 'Data']
+
+    dfNG = data[data.loc[:, 'MSN'] == 'NGTCB']
+    natural_gas = dfNG.loc[:, 'Data']
+
+    dfCoal = data[data.loc[:, 'MSN'] == 'CLTCB']
+    dataCoal = dfCoal.loc[:, 'Data']
+
+    dfWood = data[data.loc[:, 'MSN'] == 'WWTCB']
+    dataWood = dfWood.loc[:, 'Data']
+    coal_wood = dataCoal + dataWood
+
+    dfNuc = data[data.loc[:, 'MSN'] == 'NUEGB']
+    nuclear = dfNuc.loc[:, 'Data']
+
+    dfWind = data[data.loc[:, 'MSN'] == 'WYTCB']
+    wind = dfWind.loc[:, 'Data']
+
+    dfSol = data[data.loc[:, 'MSN'] == 'SOTCB']
+    solar = dfSol.loc[:, 'Data']
+
+    dfHydro = data[data.loc[:, 'MSN'] == 'HYTCB']
+    hydro = dfHydro.loc[:, 'Data']
+
+    dfGeo = data[data.loc[:, 'MSN'] == 'GETCB']
+    geo = dfGeo.loc[:, 'Data']
+
+    dfBio = data[data.loc[:, 'MSN'] == 'BMTCB']
+    bio = dfBio.loc[:, 'Data']
+
+    data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio']
+    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio]
+    dataf = pd.DataFrame(index = data_labels, data=data_values)
+
+    return dataf
+
+
+def get_state_data_for_plotting0(state1):
     state = state1
     df = data_in()
     data1 = df[df.loc[:, 'StateCode'] == state]
@@ -149,7 +199,7 @@ def get_state_data_for_plotting(state1):
 
     dfWood = data[data.loc[:, 'MSN'] == 'WWTCB']
     dataWood = dfWood.loc[:, 'Data']
-    coal_wood = dataCoal.loc[:, 'Data'] + dataWood.loc[:, 'Data']
+    coal_wood = dataCoal + dataWood
 
     dfNuc = data[data.loc[:, 'MSN'] == 'NUEGB']
     nuclear = dfNuc.loc[:, 'Data']
@@ -169,13 +219,39 @@ def get_state_data_for_plotting(state1):
     dfBio = data[data.loc[:, 'MSN'] == 'BMTCB']
     bio = dfBio.loc[:, 'Data']
 
-    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio]
-    dataf = pd.DataFrame(data_values)
-    print(dataf)
-    return data_values
+    renewable = wind + solar + hydro + geo + bio
+    nonrenewable = petro + natural_gas + coal_wood + nuclear
+
+    data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio', 'renewables',
+                   'nonrenewables']
+    data_values = [petro, natural_gas, coal_wood, nuclear, wind, solar, hydro, geo, bio, renewable, nonrenewable]
+
+    dataf = pd.DataFrame(index=data_labels, data=data_values)
+
+    return dataf
+
+df = get_state_data_for_plotting0('CA')
+ax = plt.figure(figsize=(12, 5)).add_subplot(111)
+#ax.xlabel('Number of requests every 10 minutes')
+
+total = df.loc['renewables', :] + df.loc['nonrenewables', :]
+
+ax1 = (df.loc['renewables', :] / total * 100 ).plot(color='blue', grid=True, label='Renewables')
+ax2 = (df.loc['nonrenewables', :] / total * 100 ).plot(color='red', grid=True, label='Non-renewables')
+
+h1, l1 = ax1.get_legend_handles_labels()
+print(l1)
+
+ax.set_title('Energy Consumption of Renewables and Non-rewenables over time for {}'.format('CA'))
+ax.set_ylabel('% of total energy', rotation=0)
+#ax.set_ylabels(xlabels, rotation=40, ha=ha[n])
 
 
-get_state_data_for_plotting('CA')
+#h2, l2 = ax2.get_legend_handles_labels()
+#print(l2)
+
+ax.legend(h1, l1, loc=2)
+plt.show()
 
 
 def get_state_profiles_2009(state):
@@ -230,7 +306,6 @@ def plot_df(df):
 
     plt.show(table)
 
-
 def get_state_sources_data(data):
 
     dfNG = data[data.loc[:, 'MSN'] == 'NGTCB']
@@ -279,7 +354,6 @@ def get_state_sources_data(data):
     plt.plot('x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="toto")
     plt.legend()
 
-
 def plot_state_sources_over_time(df):
     ''' Make a line chart showing a states relative use of renewable and non renewable energy'''
 
@@ -302,9 +376,9 @@ def plot_state_sources_over_time(df):
 #plot_state_sources_over_time(df)
 #get_materials_numbers(data)
 
-
+'''
 # Get the values for 2009 for all the codes for all the states
-df2009 = year_df(df, 2009)
+df2009 = make_year_df(df, 2009)
 df2009.name = '2009 Data'
 
 dfCA = state_df(df, 'CA')
@@ -322,6 +396,7 @@ dfNM2009.name = 'New Mexico 2009 Data'
 dfTX = state_df(df, 'TX')
 dfTX2009 = year_df(dfTX, 2009)
 dfTX2009.name = 'Texas 2009 Data'
+'''
 
 
 
