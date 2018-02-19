@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
+
 # ---- Functions that handle the data
 def data_in():
     
@@ -165,7 +166,9 @@ def get_state_data_for_plotting(state1):
 
     renewable = wind + solar + hydro + geo + bio
     nonrenewable = petro + natural_gas + coal_wood + nuclear
+
     total = wind + solar + hydro + geo + bio + petro + natural_gas + coal_wood + nuclear
+    #total = data[data.loc[:, 'MSN']] == 'TETCB'
 
     data_labels = ['petro', 'natural_gas', 'coal_wood', 'nuclear', 'wind', 'solar', 'hydro', 'geo', 'bio', 'renewable',
                    'nonrenewable', 'total']
@@ -186,7 +189,7 @@ def make_profile(state):
     profile_df = make_profile_df(usage_list, percentage_list)
     print(profile_df)
     return profile_df
-make_profile('CA')
+#make_profile('CA')
 
 
 # ---- Use these to create plots for various things---------
@@ -263,7 +266,6 @@ def produce_graphs(dfCA, dfAZ, dfNM, dfTX):
     plot_energy_usage_over_time_all_states(dfCA, dfAZ, dfNM, dfTX)
     plot_energy_from_renewables_over_time_all_states(dfCA, dfAZ, dfNM, dfTX)
     plot_energy_from_renewables_over_time_all_states_relative(dfCA, dfAZ, dfNM, dfTX)
-
 #produce_graphs(dfCA, dfAZ, dfNM, dfTX)
 
 
@@ -272,53 +274,64 @@ def get_state_profiles_2009(state):
     ''' For a given state, show their energy profile in 2009'''
 
     df = data_in()
-    make_profile_df_unrefined(df)
-    make
-    state_df(state)
-    year_df(2009)
+    df_st = make_state_df(df, state)
+    df_st_yr = make_year_df(df_st, 2009)
     get_materials_numbers(df)
-    plot_df()
-    plot_sources_pi()
+    usage_list, percentage_list = make_profile_df_unrefined(df_st_yr)
+    df_prof = make_profile_df(usage_list, percentage_list)
+    print('called get_State_profiles_2009')
+    return df_prof
+    #plot_df()
+    #plot_sources_pi()
+dfCA2009 = get_state_profiles_2009('CA')
 
 def plot_sources_pie(df):
     
     ''' Create a pie chart for energy sources for a given state in a given year
     :returns a matplotlib plot '''
 
-    profile_df = make_profile_df(df)
-    percentages = profile_df.loc[:, 'Percentage of Total Energy Consumed']
-    #print(percentages)
-    
-    materials = ['Petroleum and Oil', 'Natural Gas', 'Coal and Wood', 'Nuclear', 'Wind', 'Solar', 'Other']
-    # TODO fix this print statement
-    print('Where Other is Hydroelectric, Geothermal, & Biomass')
-    colors = ['red', 'red', 'red', 'red', 'green', 'green', 'green']
-    scaling = 5
-    
-    sizes = [item*scaling for item in percentages[:-1]]
-    print(len(sizes))
-    # TODO switch out the sizes and use the one representing the actual data
-    
-    #sizes = proportion * scaling
-    #sizes = [215, 130, 245, 210, 215, 130, 245, 210]
-    explode = (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)  # explode 1st slice
+    percentages = df.loc[:, 'Percentage of Total Energy Consumed']
+    materials = ['Petroleum and Oil', 'Natural Gas', 'Coal and Wood', 'Nuclear', 'Wind', 'Solar', 'Other', 'Hydroelectric', 'Geothermal', 'Biomass']
+    sizes = percentages * 100
+
+    print('Len of size is {}'.format(len(sizes)))
+    print('Len of materials is {}'.format(len(materials)))
+
+    colors = ['red', 'red', 'red', 'red', 'green', 'green', 'green', 'green', 'green', 'green']
+    explode = (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)  # explode 1st slice
 
     plt.pie(sizes, explode=explode, labels=materials, colors=colors,
             autopct='%5.1f%%', shadow=True, startangle=140)
     plt.axis('equal')
     plt.show()
+# plot_sources_pie(dfCA2009)
 
-def plot_df(df):
-    
-    ''' Not sure if I still need this method '''
-    
-    ax = plt.subplot(111) #, frame_on=False) # no visible frame
-    ax.xaxis.set_visible(False)  # hide the x axis
-    ax.yaxis.set_visible(False)  # hide the y axis
+def plot_pie_2(df):
 
-    table(ax, df)  # where df is your data frame
+    percentages = df.loc[:, 'Percentage of Total Energy Consumed']
+    materials = ['Petroleum and Oil', 'Natural Gas', 'Coal and Wood', 'Nuclear', 'Wind', 'Solar', 'Other',
+                 'Hydroelectric', 'Geothermal', 'Biomass']
+    sizes = percentages * 100
 
-    plt.show(table)
+    colors = ['red', 'red', 'red', 'red', 'green', 'green', 'green', 'green', 'green', 'green']
+    explode = (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)  # explode 1st slice
+
+    patches, texts = plt.pie(sizes, colors=colors, startangle=90, radius=1.2)
+    labels = ['{0} - {1:1.2f} %'.format(i, j) for i, j in zip(materials, sizes)]
+
+    sort_legend = False
+    if sort_legend:
+        patches, labels, dummy = zip(*sorted(zip(patches, labels, y),
+                                             key=lambda x: x[2],
+                                             reverse=True))
+
+
+
+    plt.legend(patches, labels, loc='left center', bbox_to_anchor=(-0.1, 1.),
+               fontsize=8)
+
+    plt.savefig('piechart.png', bbox_inches='tight')
+#plot_pie_2(dfCA2009)
 
 def get_state_sources_data(data):
 
@@ -367,15 +380,5 @@ def get_state_sources_data(data):
     plt.plot('x', 'y2', data=df, marker='', color='olive', linewidth=2)
     plt.plot('x', 'y3', data=df, marker='', color='olive', linewidth=2, linestyle='dashed', label="toto")
     plt.legend()
-
-def plot_state_sources_over_time(df):
-    ''' Make a line chart showing a states relative use of renewable and non renewable energy'''
-
-    plt.plot(year, ff_rel_use, color='red')
-    plt.plot(year, rn_rel_use, color='green')
-    plt.xlabel('Time')
-    plt.ylabel('Percentage of Total Energy')
-    plt.title('{State} use of energy over time')
-    plt.show()
 
 
